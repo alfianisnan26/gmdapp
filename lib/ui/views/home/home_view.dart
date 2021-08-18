@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gmdapp/app/constants/assets.dart';
 import 'package:gmdapp/app/utils/verificator.dart';
 import 'package:gmdapp/ui/views/authentication/sign_in/sign_in_view.dart';
@@ -143,13 +144,78 @@ class _HomeView extends State<HomeView> {
               GridView.count(
                   padding: EdgeInsets.all(10),
                   crossAxisCount:
-                  (MediaQuery.of(context).size.width / 300).ceil(),
-                  children: DrawerAdmin.widget(context)),
-              GridView.count(
-                  padding: EdgeInsets.all(10),
-                  crossAxisCount:
                       (MediaQuery.of(context).size.width / 300).ceil(),
-                  children: DrawerApp.widget(context)),
+                  children: DrawerAdmin.widget(context)),
+              Column(children: [
+                Padding(
+                    padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                    child: Material(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        elevation: 5,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
+                              image: DecorationImage(
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                                fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                      'https://storage.googleapis.com/s.mysch.id/picture/48454029img-20190917-wa0056.jpg'))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                    Text(
+                                      "SDN 1 Cibaregbeg Bagegok GageBok",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 25,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Juni 2021 - Agustus 2021",
+                                      style: TextStyle(fontSize: 10, color: Colors.white),
+                                    )
+                                  ])),
+                              Row(
+                                children: [
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ))),
+                Expanded(
+                    child: GridView.count(
+                        padding: EdgeInsets.all(10),
+                        crossAxisCount:
+                            (MediaQuery.of(context).size.width / 300).ceil(),
+                        children: DrawerApp.widget(context))),
+              ])
             ])));
   }
 }
