@@ -36,14 +36,21 @@ class FirebaseAuthService {
     return _userFromFirebase(authResult.user);
   }
 
-  Future<App.User> forgotPassword(String email) async{
+  Future<void> forgotPassword(String email) async{
     await _firebaseAuth.sendPasswordResetEmail(email: email);
-    return null;
   }
 
-  Future<App.User> registerNewUser(String email, String password) async{
+  Future<void> sendEmailVerification() async{
+    await _firebaseAuth.currentUser.sendEmailVerification();
+  }
+
+  Future<App.User> verify()async {
+    await _firebaseAuth.currentUser.reload();
+    return _userFromFirebase(_firebaseAuth.currentUser);
+  }
+
+  Future<App.User> registerNewUser(String email, String password) async {
     var _result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-    await _result.user.sendEmailVerification();
     return _userFromFirebase(_result.user);
   }
 

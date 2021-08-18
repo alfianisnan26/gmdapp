@@ -14,15 +14,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Consumer<User>(
+      home: //VerificationView()
+          Consumer<User>(
         builder: (_, user, __) {
           if (user == null) {
             return const SignInView();
-          } else if(user.verified) {
+          } else
             return const HomeView();
-          } else {
-            return const VerificationView();
-          }
         },
       ),
     );

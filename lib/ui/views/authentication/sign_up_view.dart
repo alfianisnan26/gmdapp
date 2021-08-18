@@ -230,7 +230,7 @@ class _SignUpView extends State<SignUpViewBody> {
                       ),
                       onPressed: (_signUpButtonState)
                           ? null
-                          : () {
+                          : () async {
                               FocusScope.of(context).unfocus();
                               if (_validState1 == false) {
                                 Utils.showScaffold(

@@ -35,6 +35,15 @@ class ForgotPasswordViewBody extends StatefulWidget {
 
 class _ForgotPasswordView extends State<ForgotPasswordViewBody> {
   TextEditingController _email = TextEditingController();
+  bool _forgetButtonState = false;
+  Widget _forgetButtonChild(bool state) => (state)
+      ? Container(
+      height: 25,
+      width: 25,
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.white,
+      ))
+      : Text(Strings.sendVerification);
   Color _color(bool state) => (state) ? Colors.blue : Colors.red;
   bool _validState = false;
   @override
@@ -120,11 +129,14 @@ class _ForgotPasswordView extends State<ForgotPasswordViewBody> {
                         ),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: (_forgetButtonState)? null : () async {
                       FocusScope.of(context).unfocus();
                       if(_validState == false){
                         Utils.showScaffold(context, Strings.errorEmailInvalid);
                       }else{
+                        setState(() {
+                          _forgetButtonState = true;
+                        });
                         context.read<FirebaseAuthService>().forgotPassword(_email.text).then((value){
                           final snackBar = SnackBar(
                             content: Text(Strings.resetEmailSent),
@@ -140,12 +152,15 @@ class _ForgotPasswordView extends State<ForgotPasswordViewBody> {
                           if(e.toString().contains('user-not-found')){
                             Utils.showScaffold(context, Strings.userNotFound);
                           }else{
-                            Utils.showScaffold(context, e.toString());
+                            print(e.toString());
+                            Utils.showScaffold(context, Strings.errorCannotSendEmail);
                           }
-                        });
+                        }).then((value) => setState(() {
+                          _forgetButtonState = true;
+                        }));
                       }
                     },
-                    child: Text(Strings.sendVerification),
+                    child: _forgetButtonChild(_forgetButtonState)
                   ),
                 ),
                 Container(

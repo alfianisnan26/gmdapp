@@ -1,4 +1,5 @@
 
+
 import 'package:flutter/material.dart';
 
 class Utils{
@@ -17,4 +18,5 @@ class Utils{
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(value);
   }
+
 }

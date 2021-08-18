@@ -42,6 +42,7 @@ class _SignInViewBody extends State<SignInViewBody> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   bool _signInButtonState = false;
+  bool _googleButtonState = false;
   Widget _signInButtonChild(bool state) => (state)
       ? Container(
           height: 25,
@@ -50,6 +51,14 @@ class _SignInViewBody extends State<SignInViewBody> {
             backgroundColor: Colors.white,
           ))
       : Text(Strings.login);
+  Widget _googleButtonChild(bool state) => (state)
+      ? Container(
+      height: 25,
+      width: 25,
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.white,
+      ))
+      : Text(Strings.signWithGoogle);
   Color _color(bool state) => (state) ? Colors.blue : Colors.red;
   bool _validState = false;
   bool _obsState = false;
@@ -171,9 +180,9 @@ class _SignInViewBody extends State<SignInViewBody> {
                         ),
                       ),
                     ),
-                    onPressed: (_signInButtonState)
+                    onPressed: (_googleButtonState || _signInButtonState)
                         ? null
-                        : () {
+                        : () async {
                             FocusScope.of(context).unfocus();
                             if (_validState == false)
                               Utils.showScaffold(
@@ -194,9 +203,13 @@ class _SignInViewBody extends State<SignInViewBody> {
                                     .contains("email-not-verified")) {
                                   Utils.showScaffold(
                                       context, Strings.emailNotVerified);
-                                } else {
+                                } else if(e.toString().contains('wrong-password')){
+                                  Utils.showScaffold(context, Strings.errorPasswordDoesNotMatch);
+                                } else if(e.toString().contains('user-not-found')){
                                   Utils.showScaffold(
-                                      context, Strings.errorCannotLogin);
+                                      context, Strings.userNotFound);
+                                } else {
+                                  Utils.showScaffold(context, Strings.errorCannotLogin);
                                 }
                               });
                             }
@@ -217,11 +230,24 @@ class _SignInViewBody extends State<SignInViewBody> {
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        context.read<FirebaseAuthService>().signInWithGoogle();
-                      },
-                      child: Text(Strings.signWithGoogle),
+                      onPressed: (_googleButtonState || _signInButtonState)
+                          ? null
+                          : () async {
+                              setState(() {
+                                _googleButtonState = true;
+                              });
+                              FocusScope.of(context).unfocus();
+                              context
+                                  .read<FirebaseAuthService>()
+                                  .signInWithGoogle()
+                                  .then((value) => setState(() {
+                                        _googleButtonState = false;
+                                      }))
+                                  .catchError((e) => setState(() {
+                                        _googleButtonState = false;
+                                      }));
+                            },
+                      child: _googleButtonChild(_googleButtonState)
                     ),
                   ),
                   Padding(
