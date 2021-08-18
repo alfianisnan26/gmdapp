@@ -1,40 +1,22 @@
 import 'dart:ui';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gmdapp/app/constants/assets.dart';
 import 'package:gmdapp/app/constants/strings.dart';
 import 'package:gmdapp/app/services/firebase_auth_service.dart';
 import 'package:gmdapp/app/utils/utils.dart';
-import 'package:gmdapp/ui/views/authentication/sign_in/sign_in_view_model.dart';
+import 'package:gmdapp/ui/views/home/home_view.dart';
 import 'package:provider/provider.dart';
 
-class SignUpView extends StatelessWidget {
-  const SignUpView({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignInViewModel>(
-      create: (_) => SignInViewModel(context.read),
-      builder: (_, child) {
-        return const Scaffold(
-          body: SignUpViewBody._(),
-        );
-      },
-    );
-  }
-}
-
-class SignUpViewBody extends StatefulWidget {
-  const SignUpViewBody._({Key key}) : super(key: key);
+class SignUpView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _SignUpView();
   }
 }
 
-class _SignUpView extends State<SignUpViewBody> {
+class _SignUpView extends State<SignUpView> {
   bool _signUpButtonState = false;
   Widget _signUpButtonChild(bool state) => (state)
       ? Container(
@@ -233,13 +215,13 @@ class _SignUpView extends State<SignUpViewBody> {
                           : () async {
                               FocusScope.of(context).unfocus();
                               if (_validState1 == false) {
-                                Utils.showScaffold(
+                                Utils.showSnackbar(
                                     context, Strings.errorEmailInvalid);
                               } else if (_validState2 == false) {
-                                Utils.showScaffold(
+                                Utils.showSnackbar(
                                     context, Strings.errorPasswordInvalid);
                               } else if (_validState2 == false) {
-                                Utils.showScaffold(
+                                Utils.showSnackbar(
                                     context, Strings.errorPasswordDoesNotMatch);
                               } else {
                                 setState(() {
@@ -254,6 +236,7 @@ class _SignUpView extends State<SignUpViewBody> {
                                     _signUpButtonState = false;
                                   });
                                   Navigator.of(context).pop();
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const HomeView()));
                                 }).catchError((e) {
                                   setState(() {
                                     _signUpButtonState = false;
@@ -261,16 +244,16 @@ class _SignUpView extends State<SignUpViewBody> {
                                   if (e
                                       .toString()
                                       .contains('email-already-in-use')) {
-                                    Utils.showScaffold(
+                                    Utils.showSnackbar(
                                         context, Strings.emailAlreadyInUse);
                                   } else if (e
                                       .toString()
                                       .contains('weak-password')) {
-                                    Utils.showScaffold(
+                                    Utils.showSnackbar(
                                         context, Strings.errorPasswordInvalid);
                                   } else {
                                     print(e);
-                                    Utils.showScaffold(
+                                    Utils.showSnackbar(
                                         context, Strings.errorCannotRegister);
                                   }
                                 });

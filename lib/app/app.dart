@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gmdapp/ui/views/authentication/verification_view.dart';
+import 'package:gmdapp/app/services/firebase_auth_service.dart';
+import 'package:gmdapp/app/utils/verificator.dart';
 import 'package:provider/provider.dart';
 
 import '../ui/views/authentication/sign_in/sign_in_view.dart';
@@ -10,19 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Gerakan Mengajar Desa - Sukabumi',
       theme: ThemeData(
+        fontFamily: 'PlusJakartaSans',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: //VerificationView()
-          Consumer<User>(
-        builder: (_, user, __) {
-          if (user == null) {
-            return const SignInView();
-          } else
-            return const HomeView();
-        },
-      ),
+      home: (FirebaseAuthService().user == null) ? SignInView() : const HomeView()
     );
   }
 }

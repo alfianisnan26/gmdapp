@@ -164,4 +164,49 @@ class Strings {
     Locale.EN: "timeout",
     Locale.ID: "waktu berakhir"
   }[lang];
+
+  static String checkVerification = {
+    Locale.EN: "Check verification",
+    Locale.ID: "Cek verifikasi"
+  }[lang];
+
+  static String dashboard = {
+    Locale.EN: "Dashboard",
+    Locale.ID: "Beranda"
+  }[lang];
+
+  static String helloTutor = {
+    Locale.EN: "Hello, tutor",
+    Locale.ID: "Halo, tutor"
+  }[lang];
+
+  static String profile = {
+    Locale.EN: "Profile",
+    Locale.ID: "Profil"
+  }[lang];
+
+  static String setting = {
+    Locale.EN: "Setting",
+    Locale.ID: "Pengaturan"
+  }[lang];
+
+  static String exit = {
+    Locale.EN: "Exit",
+    Locale.ID: "Keluar"
+  }[lang];
+
+  static String about = {
+    Locale.EN: "About",
+    Locale.ID: "Tentang"
+  }[lang];
+
+  static String help = {
+    Locale.EN: "Help",
+    Locale.ID: "Bantuan"
+  }[lang];
+
+  static String logout = {
+    Locale.EN: "Logout",
+    Locale.ID: "Logout"
+  }[lang];
 }//EOF

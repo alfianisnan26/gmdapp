@@ -79,6 +79,36 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans-BoldItalic.ttf
+          style: italic
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans-ExtraBold.ttf
+          weight: 900
+        - asset: assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/PlusJakartaSans-ExtraLight.ttf
+          weight: 100
+        - asset: assets/fonts/PlusJakartaSans-ExtraLightItalic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/PlusJakartaSans-Italic.ttf
+          style: italic
+        - asset: assets/fonts/PlusJakartaSans-Light.ttf
+          weight: 200
+        - asset: assets/fonts/PlusJakartaSans-LightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-MediumItalic.ttf
+          weight: 600
+          style: italic
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

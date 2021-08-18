@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
@@ -6,46 +7,48 @@ import 'package:gmdapp/app/constants/assets.dart';
 import 'package:gmdapp/app/constants/strings.dart';
 import 'package:gmdapp/app/services/firebase_auth_service.dart';
 import 'package:gmdapp/app/utils/utils.dart';
-import 'package:gmdapp/ui/views/authentication/sign_in/sign_in_view_model.dart';
 import 'package:provider/provider.dart';
 
-class ForgotPasswordView extends StatelessWidget {
-  const ForgotPasswordView({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignInViewModel>(
-      create: (_) => SignInViewModel(context.read),
-      builder: (_, child) {
-        return const Scaffold(
-          body: ForgotPasswordViewBody._(),
-        );
-      },
-    );
-  }
-}
-
-class ForgotPasswordViewBody extends StatefulWidget {
-  const ForgotPasswordViewBody._({Key key}) : super(key: key);
+class ForgotPasswordView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ForgotPasswordView();
   }
 }
 
-class _ForgotPasswordView extends State<ForgotPasswordViewBody> {
+class _ForgotPasswordView extends State<ForgotPasswordView> {
   TextEditingController _email = TextEditingController();
-  bool _forgetButtonState = false;
-  Widget _forgetButtonChild(bool state) => (state)
-      ? Container(
-      height: 25,
-      width: 25,
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.white,
-      ))
-      : Text(Strings.sendVerification);
+
+  static Timer _timer;
+  static Duration _duration;
+  static Duration _lastDuration;
+  Timer _timerObj;
+
   Color _color(bool state) => (state) ? Colors.blue : Colors.red;
   bool _validState = false;
+
+  void startLocalTimer() {
+    _timerObj = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {});
+      if (_timer == null) {
+        _timerObj.cancel();
+        _timerObj = null;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    if (_timer != null) startLocalTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_timerObj != null) _timerObj.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -122,46 +125,67 @@ class _ForgotPasswordView extends State<ForgotPasswordViewBody> {
                   width: (size.width > 400) ? 400 : size.width,
                   padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0),
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30.0),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: (_forgetButtonState)? null : () async {
-                      FocusScope.of(context).unfocus();
-                      if(_validState == false){
-                        Utils.showScaffold(context, Strings.errorEmailInvalid);
-                      }else{
-                        setState(() {
-                          _forgetButtonState = true;
-                        });
-                        context.read<FirebaseAuthService>().forgotPassword(_email.text).then((value){
-                          final snackBar = SnackBar(
-                            content: Text(Strings.resetEmailSent),
-                            action: SnackBarAction(
-                              label: Strings.back,
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }).catchError((e){
-                          if(e.toString().contains('user-not-found')){
-                            Utils.showScaffold(context, Strings.userNotFound);
-                          }else{
-                            print(e.toString());
-                            Utils.showScaffold(context, Strings.errorCannotSendEmail);
-                          }
-                        }).then((value) => setState(() {
-                          _forgetButtonState = true;
-                        }));
-                      }
-                    },
-                    child: _forgetButtonChild(_forgetButtonState)
-                  ),
+                      onPressed: (_timer != null)
+                          ? null
+                          : () async {
+                              FocusScope.of(context).unfocus();
+                              if (_validState == false) {
+                                Utils.showSnackbar(
+                                    context, Strings.errorEmailInvalid);
+                              } else {
+                                context
+                                    .read<FirebaseAuthService>()
+                                    .forgotPassword(_email.text)
+                                    .then((value) {
+                                  final snackBar = SnackBar(
+                                    content: Text(Strings.resetEmailSent),
+                                    action: SnackBarAction(
+                                      label: Strings.back,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                  _duration = Duration(minutes: 3);
+                                  _timer = Timer.periodic(Duration(seconds: 1),
+                                      (timer) {
+                                    _duration -= Duration(seconds: 1);
+                                    if (_duration.isNegative) {
+                                      _timer.cancel();
+                                      _timer = null;
+                                    }
+                                  });
+                                  startLocalTimer();
+                                }).catchError((e) {
+                                  if (e.toString().contains('user-not-found')) {
+                                    Utils.showSnackbar(
+                                        context, Strings.userNotFound);
+                                  } else {
+                                    print(e.toString());
+                                    Utils.showSnackbar(
+                                        context, Strings.errorCannotSendEmail);
+                                  }
+                                });
+                              }
+                            },
+                      child: (_timer == null)
+                          ? Text(Strings.verify)
+                          : Text(
+                              _duration.toString().substring(3, 7),
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.5)),
+                            )),
                 ),
                 Container(
                   width: (size.width > 400) ? 400 : size.width,

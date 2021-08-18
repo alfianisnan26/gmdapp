@@ -30,9 +30,7 @@ class FirebaseAuthService {
   Future<App.User> signInWithEmail(email, password) async {
     var authResult = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-    if(!authResult.user.emailVerified){
-      await authResult.user.sendEmailVerification();
-    }
+    print("Sign in with EMAIL");
     return _userFromFirebase(authResult.user);
   }
 
@@ -55,6 +53,7 @@ class FirebaseAuthService {
   }
 
   Future<App.User> signInWithGoogle() async {
+
     final googleUser = await _googleSignIn.signIn();
     final googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
@@ -62,6 +61,7 @@ class FirebaseAuthService {
       idToken: googleAuth.idToken,
     );
     final authResult = await _firebaseAuth.signInWithCredential(credential);
+    print("Sign in with GOOGLE");
     return _userFromFirebase(authResult.user);
   }
 

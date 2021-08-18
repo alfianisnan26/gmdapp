@@ -1,11 +1,27 @@
-name
-Hello English
-Halo Indonesia
+helloTutor
+Hello, tutor
+Halo, tutor
 
-helo1
-Coming from Love
-Berawal dari Cinta
+profile
+Profile
+Profil
 
-helo2
-Make your world
-Buatlah duniamu
+setting
+Setting
+Pengaturan
+
+exit
+Exit
+Keluar
+
+about
+About
+Tentang
+
+help
+Help
+Bantuan
+
+logout
+Logout
+Logout

@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 
 class Utils{
-  static void showScaffold(BuildContext context, String msg){
+  static void showSnackbar(BuildContext context, String msg){
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 

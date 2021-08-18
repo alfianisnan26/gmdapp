@@ -17,7 +17,6 @@ Future<void> main(List<String> args) async {
   } else if (args[0] == '-f' || args[0] == '--file'){
     File f = File(args[1]);
     final value = await f.readAsLines();
-    print("here");
     for(int i = 0; i < value.length ; i++){
       if(value[i] != '\n'){
         await main([value[i++], value[i++], value[i++]]);

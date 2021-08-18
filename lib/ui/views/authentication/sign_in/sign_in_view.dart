@@ -10,35 +10,19 @@ import 'package:gmdapp/app/services/firebase_auth_service.dart';
 import 'package:gmdapp/app/utils/utils.dart';
 import 'package:gmdapp/ui/views/authentication/forgot_password_view.dart';
 import 'package:gmdapp/ui/views/authentication/sign_up_view.dart';
+import 'package:gmdapp/ui/views/home/home_view.dart';
 import 'package:provider/provider.dart';
 
 import 'sign_in_view_model.dart';
 
-class SignInView extends StatelessWidget {
-  const SignInView({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignInViewModel>(
-      create: (_) => SignInViewModel(context.read),
-      builder: (_, child) {
-        return const Scaffold(
-          body: SignInViewBody._(),
-        );
-      },
-    );
-  }
-}
-
-class SignInViewBody extends StatefulWidget {
-  const SignInViewBody._({Key key}) : super(key: key);
+class SignInView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _SignInViewBody();
+    return _SignInView();
   }
 }
 
-class _SignInViewBody extends State<SignInViewBody> {
+class _SignInView extends State<SignInView> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   bool _signInButtonState = false;
@@ -53,11 +37,11 @@ class _SignInViewBody extends State<SignInViewBody> {
       : Text(Strings.login);
   Widget _googleButtonChild(bool state) => (state)
       ? Container(
-      height: 25,
-      width: 25,
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.white,
-      ))
+          height: 25,
+          width: 25,
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.white,
+          ))
       : Text(Strings.signWithGoogle);
   Color _color(bool state) => (state) ? Colors.blue : Colors.red;
   bool _validState = false;
@@ -68,7 +52,8 @@ class _SignInViewBody extends State<SignInViewBody> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return GestureDetector(
+    return Scaffold(
+        body: GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
@@ -185,31 +170,44 @@ class _SignInViewBody extends State<SignInViewBody> {
                         : () async {
                             FocusScope.of(context).unfocus();
                             if (_validState == false)
-                              Utils.showScaffold(
+                              Utils.showSnackbar(
                                   context, Strings.errorEmailInvalid);
                             else {
                               setState(() {
                                 _signInButtonState = true;
                               });
-                              context
-                                  .read<FirebaseAuthService>()
+                              FirebaseAuthService()
                                   .signInWithEmail(_email.text, _password.text)
-                                  .catchError((e) {
+                                  .then((value) {
+                                setState(() {
+                                  _signInButtonState = false;
+                                });
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const HomeView()));
+                              }).catchError((e) {
                                 setState(() {
                                   _signInButtonState = false;
                                 });
                                 if (e
                                     .toString()
                                     .contains("email-not-verified")) {
-                                  Utils.showScaffold(
+                                  Utils.showSnackbar(
                                       context, Strings.emailNotVerified);
-                                } else if(e.toString().contains('wrong-password')){
-                                  Utils.showScaffold(context, Strings.errorPasswordDoesNotMatch);
-                                } else if(e.toString().contains('user-not-found')){
-                                  Utils.showScaffold(
+                                } else if (e
+                                    .toString()
+                                    .contains('wrong-password')) {
+                                  Utils.showSnackbar(context,
+                                      Strings.errorPasswordDoesNotMatch);
+                                } else if (e
+                                    .toString()
+                                    .contains('user-not-found')) {
+                                  Utils.showSnackbar(
                                       context, Strings.userNotFound);
                                 } else {
-                                  Utils.showScaffold(context, Strings.errorCannotLogin);
+                                  Utils.showSnackbar(
+                                      context, Strings.errorCannotLogin);
                                 }
                               });
                             }
@@ -223,32 +221,35 @@ class _SignInViewBody extends State<SignInViewBody> {
                     width: (size.width > 400) ? 400 : size.width,
                     padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                     child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0),
+                            ),
                           ),
                         ),
-                      ),
-                      onPressed: (_googleButtonState || _signInButtonState)
-                          ? null
-                          : () async {
-                              setState(() {
-                                _googleButtonState = true;
-                              });
-                              FocusScope.of(context).unfocus();
-                              context
-                                  .read<FirebaseAuthService>()
-                                  .signInWithGoogle()
-                                  .then((value) => setState(() {
-                                        _googleButtonState = false;
-                                      }))
-                                  .catchError((e) => setState(() {
-                                        _googleButtonState = false;
-                                      }));
-                            },
-                      child: _googleButtonChild(_googleButtonState)
-                    ),
+                        onPressed: (_googleButtonState || _signInButtonState)
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _googleButtonState = true;
+                                });
+                                FocusScope.of(context).unfocus();
+                                FirebaseAuthService()
+                                    .signInWithGoogle()
+                                    .then((value) {
+                                  setState(() {
+                                    _googleButtonState = false;
+                                  });
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const HomeView()));
+                                }).catchError((e) => setState(() {
+                                          _googleButtonState = false;
+                                        }));
+                              },
+                        child: _googleButtonChild(_googleButtonState)),
                   ),
                   Padding(
                       padding: EdgeInsets.only(left: 20, top: 10),
@@ -277,7 +278,7 @@ class _SignInViewBody extends State<SignInViewBody> {
               ))
         ],
       ),
-    );
+    ));
   }
 }
 

@@ -1,9 +1,8 @@
-import 'dart:async';
+import 'dart:html';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gmdapp/app/utils/verificator.dart';
-import 'package:provider/provider.dart';
+import 'package:gmdapp/ui/views/authentication/sign_in/sign_in_view.dart';
 
 import '../../../app/constants/strings.dart';
 import '../../../app/services/firebase_auth_service.dart';
@@ -26,41 +25,54 @@ class _HomeView extends State<HomeView>{
     print("Display Name : " + FirebaseAuthService().currentUser().displayName.toString());
     print("Verified     : " + FirebaseAuthService().currentUser().verified.toString());
     print("PhotoURL     : " + FirebaseAuthService().currentUser().photoUrl.toString());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)  => Verify.check(context, dontShow: true, callback: setState));
     super.initState();
-    Verify.check(context, time: 3);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Home Page',
-                style: Theme.of(context).textTheme.headline4,
+      backgroundColor: (FirebaseAuthService().currentUser().verified)? Colors.white : Colors.black,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
+              child: Text(Strings.helloTutor)
             ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                Verify.check(context);
+            ListTile(
+              title: Text(Strings.profile),
+            ),
+            ListTile(
+              title: Text(Strings.setting),
+            ),
+            ListTile(
+              title: Text(Strings.help),
+            ),
+            ListTile(
+              enabled: !FirebaseAuthService().currentUser().verified,
+              title: Text(Strings.checkVerification),
+              onTap: (){
+                Navigator.of(context).pop();
+                if(Verify.check(context)) setState(() {});
               },
-              child: Text(Strings.verify),
             ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                context.read<FirebaseAuthService>().signOut();
-              },
-              child: Text(Strings.signOut),
+            ListTile(
+              title: Text(Strings.exit),
+              onTap: (){
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => SignInView()));
+                FirebaseAuthService().signOut();
+                },
             ),
-            const Spacer(),
           ],
-        ),
+        )
       ),
+      appBar: AppBar(title: Text(Strings.dashboard)),
+      body: SingleChildScrollView()
     );
   }
 }
