@@ -25,3 +25,36 @@ Bantuan
 logout
 Logout
 Logout
+
+hello
+Hello
+Halo
+
+lessonPlan
+Lesson Plan
+Rancangan Perangkat Pembelajaran
+
+scoringBook
+Scoring Book
+Buku Penilaian
+
+administration
+Administration
+Administrasi
+
+learning
+Learning System
+Pembelajaran
+
+attendance
+Attendance
+Kehadiran
+
+membership
+Membership
+Keanggotaan
+
+villageTeaching
+Village Teaching
+Mengajar Desa
+

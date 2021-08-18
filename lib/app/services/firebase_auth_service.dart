@@ -71,3 +71,11 @@ class FirebaseAuthService {
 
   User get user => _firebaseAuth.currentUser;
 }
+
+class FAS{
+  static App.User get user => FirebaseAuthService().currentUser();
+  static String get displayName {
+    if(user.displayName == null) return "Tutor";
+    else return user.displayName;
+  }
+}

@@ -209,4 +209,44 @@ class Strings {
     Locale.EN: "Logout",
     Locale.ID: "Logout"
   }[lang];
+
+  static String hello = {
+    Locale.EN: "Hello",
+    Locale.ID: "Halo"
+  }[lang];
+
+  static String lessonPlan = {
+    Locale.EN: "Lesson Plan",
+    Locale.ID: "Rancangan Perangkat Pembelajaran"
+  }[lang];
+
+  static String scoringBook = {
+    Locale.EN: "Scoring Book",
+    Locale.ID: "Buku Penilaian"
+  }[lang];
+
+  static String administration = {
+    Locale.EN: "Administration",
+    Locale.ID: "Administrasi"
+  }[lang];
+
+  static String learning = {
+    Locale.EN: "Learning System",
+    Locale.ID: "Pembelajaran"
+  }[lang];
+
+  static String attendance = {
+    Locale.EN: "Attendance",
+    Locale.ID: "Kehadiran"
+  }[lang];
+
+  static String membership = {
+    Locale.EN: "Membership",
+    Locale.ID: "Keanggotaan"
+  }[lang];
+
+  static String villageTeaching = {
+    Locale.EN: "Village Teaching",
+    Locale.ID: "Mengajar Desa"
+  }[lang];
 }//EOF
